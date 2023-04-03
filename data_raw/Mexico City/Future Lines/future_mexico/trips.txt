@@ -1,0 +1,9 @@
+route_id,service_id,trip_id,trip_short_name,wheelchair_accessible,direction_id,shape_id,trip_headsign
+ML_1,ground_daily,ML_1_O_ground_daily,,0,0,ML_1_O_Shape,
+ML_2,ground_daily,ML_2_O_ground_daily,,0,0,ML_2_O_Shape,
+ML_3,ground_daily,ML_3_O_ground_daily,,0,0,ML_3_O_Shape,
+ML_4,ground_daily,ML_4_O_ground_daily,,0,0,ML_4_O_Shape,
+ML_1,ground_daily,ML_1_R_ground_daily,,0,1,ML_1_R_Shape,
+ML_2,ground_daily,ML_2_R_ground_daily,,0,1,ML_2_R_Shape,
+ML_3,ground_daily,ML_3_R_ground_daily,,0,1,ML_3_R_Shape,
+ML_4,ground_daily,ML_4_R_ground_daily,,0,1,ML_4_R_Shape,

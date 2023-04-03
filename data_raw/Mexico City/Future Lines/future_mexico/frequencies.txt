@@ -1,0 +1,9 @@
+trip_id,start_time,end_time,headway_secs
+ML_1_O_ground_daily,5:15:00,23:55:00,900
+ML_2_O_ground_daily,5:15:00,23:55:00,900
+ML_3_O_ground_daily,5:15:00,23:55:00,900
+ML_4_O_ground_daily,5:15:00,23:55:00,900
+ML_1_R_ground_daily,5:15:00,23:55:00,900
+ML_2_R_ground_daily,5:15:00,23:55:00,900
+ML_3_R_ground_daily,5:15:00,23:55:00,900
+ML_4_R_ground_daily,5:15:00,23:55:00,900

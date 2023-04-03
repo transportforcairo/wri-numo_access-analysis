@@ -1,0 +1,203 @@
+{
+    "name": "mc_future_feed",
+    "version": "1.1.2",
+    "start_date": "2020-09-24",
+    "end_date": "2023-09-23",
+    "start_time": "05:15AM",
+    "end_time": "12:00AM",
+    "lang": "en",
+    "currency": "USD",
+    "google_key": "",
+    "shapes": {
+        "stops": "D:/_TfC/Repos/_Projects/32_wri_numo/Future Lines/shp/stops.shp",
+        "trips": "D:/_TfC/Repos/_Projects/32_wri_numo/Future Lines/shp/trips.shp"
+    },
+    "pre_processors": [
+        {
+            "run": "trip_service",
+            "params": {
+                "services": ["ground_daily"]
+            }
+        }
+    ],
+    "files": {
+        "feed_info": {
+            "data": [
+                {
+                    "feed_publisher_name": "Transport for Cairo",
+                    "feed_publisher_url": "http://transportforcairo.com",
+                    "feed_lang": "$lang",
+                    "feed_start_date": "$start_date",
+                    "feed_end_date": "$end_date",
+                    "feed_version": "$version"
+                }
+            ],
+            "schema": {
+                "feed_publisher_name": "#feed_publisher_name",
+                "feed_publisher_url": "#feed_publisher_url",
+                "feed_lang": "#feed_lang",
+                "feed_start_date": "#feed_start_date",
+                "feed_end_date": "#feed_end_date",
+                "feed_version": "#feed_version"
+            }
+        },
+        "agency": {
+            "data": [
+                {
+                    "agency_id": "mexibus",
+                    "agency_name": "Mexibus",
+                    "agency_url": "https://sample.com/",
+                    "agency_timezone": "America/Mexico_City",
+                    "agency_lang": "en",
+                    "agency_phone": "2",
+                    "agency_email": "info@mexibus.com"
+                }
+            ],
+            "schema": {
+                "agency_id": "#agency_id",
+                "agency_name": "#agency_name",
+                "agency_url": "#agency_url",
+                "agency_timezone": "#agency_timezone",
+                "agency_lang": "#agency_lang",
+                "agency_phone": "#agency_phone",
+                "agency_email": "#agency_email"
+            }
+        },
+        "routes": {
+            "data": "shapes.trips",
+            "schema": {
+                "route_id": "#route_id",
+                "agency_id": "#agency_id",
+                "route_short_name": "#route_shor",
+                "route_type": "#route_type"
+            }
+        },
+        "stops": {
+            "data": "shapes.stops",
+            "schema": {
+                "stop_id": "#stop_id",
+                "stop_name": "#stop_name",
+                "stop_desc": "",
+                "stop_lat": "#geometry.lat",
+                "stop_lon": "#geometry.lon"
+            }
+        },
+        "shapes": {
+            "params": {
+                "duplicate_key": [
+                    "trip_id"
+                ]
+            },
+            "data": "shapes.trips",
+            "pre_schema": {
+                "trip_id": "#trip_id",
+                "geometry": "#geometry"
+            },
+            "schema": {
+                "shape_id": "#trip_id+_Shape",
+                "shape_pt_lat": "#geometry.lat",
+                "shape_pt_lon": "#geometry.lon",
+                "shape_pt_sequence": "#geometry.seq"
+            }
+        },
+        "trips": {
+            "data": "shapes.trips",
+            "requires": [
+                {
+                    "file": "shapes"
+                }
+            ],
+            "schema": {
+                "route_id": "#route_id",
+                "service_id": "#service_id",
+                "trip_id": "#trip_id+_+#service_id",
+                "trip_short_name": "#trip_short", 
+                "wheelchair_accessible": "#wheelchair", 
+                "direction_id": "#direction_",
+                "shape_id": "#trip_id+_Shape",
+                "trip_headsign": "#trip_heads"
+            }
+        },
+        "calendar": {
+            "data": [
+                {
+                    "service_id": "ground_daily",
+                    "sunday": 1,
+                    "monday": 1,
+                    "tuesday": 1,
+                    "wednesday": 1,
+                    "thursday": 1,
+                    "friday": 1,
+                    "saturday": 1,
+                    "start_date": "$start_date",
+                    "end_date": "$end_date"
+                }
+            ],
+            "schema": {
+                "service_id": "#service_id",
+                "start_date": "#start_date",
+                "end_date": "#end_date",
+                "sunday": "#sunday",
+                "monday": "#monday",
+                "tuesday": "#tuesday",
+                "wednesday": "#wednesday",
+                "thursday": "#thursday",
+                "friday": "#friday",
+                "saturday": "#saturday"
+            }
+        },
+        "calendar_dates": {
+            "requires": [
+                {
+                    "file": "calendar"
+                }
+            ],
+            "data": [
+                {
+                    "date": "$start_date",
+                    "service_id": "ground_daily",
+                    "exception_type": 1
+                }
+            ],
+            "schema": {
+                "date": "#date",
+                "service_id": "#service_id",
+                "exception_type": "#exception_type"
+            }
+        },
+        "stop_times": {
+            "params": {
+                "radius": 2,
+                "waiting_time": 30,
+                "start_time": "$start_time",
+                "end_time": "$start_time",
+                "headways": 1, 
+                "speed": 40
+            },
+            "schema": {
+                "trip_id": "#trip_id+_+#service_id",
+                "stop_id": "#stop_id",
+                "arrival_time": "#arrival_time",
+                "departure_time": "#departure_time",
+                "stop_sequence": "#seq",
+                "stop_headsign": "",
+                "pickup_type": "",
+                "drop_off_type": "",
+                "shape_dist_traveled": "",
+                "timepoint": "#timepoint"
+            }
+        },
+        "frequencies": {
+            "data": "D:/_Tfc/Repos/_Cities/cairo/GTFS/config/frequencies.csv",
+            "params": {
+                "format_time": 0
+            },
+            "schema": {
+                "trip_id": "#trip_id+_+#service_id",
+                "start_time": "#start_time",
+                "end_time": "#end_time",
+                "headway_secs": "#headway_secs"
+            }
+        }
+    }
+}

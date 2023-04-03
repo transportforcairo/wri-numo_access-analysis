@@ -1,0 +1,26 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+*.mapdb
+*.p
+*.dat
+data_raw/San Francisco/level_ii/ACS_2018_5YR_BG_06.gdb.zip
+data_raw/San Francisco/level_ii/movement-speeds-quarterly-by-hod-san-francisco-2020-Q1.csv.zip
+data_raw/San Francisco/level_i/census_block.geojson
+data/Mexico City/GTFS/network.dat
+**/level_i_ii/travel_time_matrix.csv
+**/level_i_ii/travel_time_matrix.csv.gz
+**/level_i_ii/travel_time_matrix_freeflow.csv
+**/level_i_ii/travel_time_matrix_freeflow.csv.gz
+**/level_i_ii/travel_time_matrix_w_metadata.csv
+**/level_i_ii/travel_time_matrix_w_metadata.csv.gz
+data/San Francisco/level_i_ii/tt_improvement_desire_lines.geojson
+data/Cairo/level_i_ii/tt_improvement_desire_lines.geojson
+data/Mexico City/level_i_ii/travel_time_matrix_w_metadata.csv
+data/Mexico City/level_i_ii/tt_improvement_desire_lines.geojson
+data/Minneapolis/level_i_ii/travel_time_matrix_w_metadata.csv
+data/Minneapolis/level_i_ii/tt_improvement_desire_lines.geojson
+data/San Francisco/level_i_ii/travel_time_matrix_w_metadata.csv
+data/San Francisco/level_i_ii/tt_improvement_desire_lines.geojson

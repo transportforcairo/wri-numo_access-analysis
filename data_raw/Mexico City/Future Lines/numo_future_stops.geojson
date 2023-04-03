@@ -1,0 +1,17 @@
+{
+"type": "FeatureCollection",
+"name": "numo_future_stops",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": null, "name": "Constitucion 1917", "route_id": 1 }, "geometry": { "type": "Point", "coordinates": [ -99.061012952530589, 19.3446632341943 ] } },
+{ "type": "Feature", "properties": { "id": null, "name": "Dptvo. Santa Cruz", "route_id": 1 }, "geometry": { "type": "Point", "coordinates": [ -99.048901373861597, 19.342449389596304 ] } },
+{ "type": "Feature", "properties": { "id": null, "name": "Santa Cruz Meyehualco", "route_id": 1 }, "geometry": { "type": "Point", "coordinates": [ -99.040577090893464, 19.343236653651157 ] } },
+{ "type": "Feature", "properties": { "id": null, "name": "DIF Iztapalapa", "route_id": 1 }, "geometry": { "type": "Point", "coordinates": [ -99.033433327069389, 19.343909572919571 ] } },
+{ "type": "Feature", "properties": { "id": null, "name": "CECyT7", "route_id": 1 }, "geometry": { "type": "Point", "coordinates": [ -99.02560010531289, 19.344689720082229 ] } },
+{ "type": "Feature", "properties": { "id": null, "name": "Las Minas", "route_id": 1 }, "geometry": { "type": "Point", "coordinates": [ -99.02080909071978, 19.345473869624819 ] } },
+{ "type": "Feature", "properties": { "id": null, "name": "Plaza Ermita", "route_id": 1 }, "geometry": { "type": "Point", "coordinates": [ -99.01831244191159, 19.349139337618798 ] } },
+{ "type": "Feature", "properties": { "id": null, "name": "Las Torres", "route_id": 1 }, "geometry": { "type": "Point", "coordinates": [ -99.015075420157018, 19.352411031271767 ] } },
+{ "type": "Feature", "properties": { "id": null, "name": "Penitenciaria", "route_id": 1 }, "geometry": { "type": "Point", "coordinates": [ -99.009339596461302, 19.354768023591024 ] } },
+{ "type": "Feature", "properties": { "id": null, "name": "UACM Casa Libertad", "route_id": 1 }, "geometry": { "type": "Point", "coordinates": [ -99.002338863983965, 19.357531138467117 ] } }
+]
+}

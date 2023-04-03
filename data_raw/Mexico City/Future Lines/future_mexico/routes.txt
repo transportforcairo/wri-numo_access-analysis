@@ -1,0 +1,5 @@
+route_id,agency_id,route_short_name,route_type
+ML_1,mexibus,ML 1,3
+ML_2,mexibus,ML 2,3
+ML_3,mexibus,ML 3,3
+ML_4,mexibus,ML_4,3

@@ -1,0 +1,137 @@
+stop_id,stop_name,stop_desc,stop_lat,stop_lon
+0,Ciudad Azteca,,19.534342,-99.027173
+1,Quinto Sol,,19.539592,-99.025421
+2,Josefa OrtÃ­z,,19.546379,-99.022522
+3,Industrial,,19.550115,-99.020875
+4,UNITEC,,19.554361,-99.01925
+5,Alfredo Torres,,19.558269,-99.017372
+6,Zodiaco,,19.563192,-99.015285
+7,Adolfo LÃ³pez Mateos,,19.567054,-99.015564
+8,Vocacional 3,,19.570011,-99.017984
+9,Valle de Ecatepec,,19.573033,-99.0208
+10,Las AmÃ©ricas,,19.580539,-99.02448
+11,1Â° de Mayo,,19.587645,-99.024727
+12,Hospital,,19.594708,-99.020001
+13,Aquiles SerdÃ¡n,,19.598468,-99.017943
+14,Jardines de Morelos,,19.600724,-99.016138
+15,Palomas,,19.607294,-99.011552
+16,19 de Septiembre,,19.610563,-99.009309
+17,"Central de Abastos",,19.616344,-99.007748
+18,Insurgentes,,19.625682,-99.003135
+19,Hidalgo,,19.633488,-99.002121
+20,CuauhtÃ©moc Sur,,19.63797,-99.002652
+21,CuahutÃ©moc Norte,,19.646458,-99.005058
+22,Esmeralda,,19.651702,-99.005093
+23,Ojo de Agua,,19.6616992,-99.0019114
+24,"Ojo de Agua",,19.6616204,-99.001264
+25,"Loma Bonita",,19.6681621,-99.0040266
+26,Ozumbilla,,19.6805409,-98.9959101
+27,San Francisco,,19.6884137,-98.9883998
+28,"TecÃ¡mac",,19.7116409,-98.9748903
+29,Glorieta Militar,,19.749364,-98.9778996
+30,Combustibles,,19.7624387,-98.9930116
+31,Hacienda,,19.7539622,-99.0037913
+32,Terminal de Pasajeros,,19.7372204,-99.0276935
+33,Las AmÃ©ricas,,19.590124,-99.023941
+34,1o de Mayo,,19.593406,-99.029305
+35,San MartÃ­n,,19.595539,-99.030579
+36,Puente de Fierro,,19.601038,-99.033787
+37,Casa de Morelos,,19.599213,-99.03578
+38,UPE,,19.601909,-99.041841
+39,San CristÃ³bal,,19.604102,-99.046048
+40,Agricultura,,19.605568,-99.048735
+41,ISSEMYM,,19.60694,-99.051251
+42,El Carmen,,19.608714,-99.05455
+43,Ecatepec,,19.611614,-99.059351
+44,DIF,,19.613878,-99.0611
+45,Guadalupe Victoria,,19.618668,-99.067264
+46,Venustiano Carranza,,19.620096,-99.069554
+47,FOVISSTE,,19.621743,-99.072121
+48,San Carlos,,19.62483,-99.077024
+49,La Laguna,,19.627074,-99.080538
+50,Parque Residencial,,19.629926,-99.086458
+51,Eje 8,,19.631614,-99.090768
+52,1a de Villa,,19.632667,-99.093598
+53,Las Flores / Zacuautitla,,19.63387,-99.096876
+54,San Francisco,,19.635337,-99.103232
+55,HÃ©roes - Canosas,,19.635724,-99.106089
+56,Coacalco Tultepec,,19.635148,-99.112845
+57,Ex- Hacienda San Felipe,,19.633597,-99.116971
+58,Bosques del Valle,,19.632748,-99.119275
+59,Coacalco BerriozÃ¡bal,,19.63081,-99.124593
+60,Santa MarÃ­a,,19.630131,-99.128
+61,Villas de San JosÃ©,,19.629598,-99.131272
+62,Mariscala Real del bosque,,19.62886,-99.136001
+63,Fuentes del Valle,,19.627966,-99.140142
+64,San Mateo,,19.626,-99.147819
+65,Cartagena,,19.624863,-99.152191
+66,Bello Horizonte,,19.623509,-99.157416
+67,Bandera - TultitlÃ¡n,,19.622044,-99.163
+68,Buenavista,,19.620841,-99.167731
+69,COCEM,,19.619846,-99.171604
+70,Recursos HidrÃ¡ulicos,,19.617193,-99.178959
+71,Chilpan,,19.614671,-99.180837
+72,Ciudad Labor,,19.608729,-99.181851
+73,Vidreria,,19.606424,-99.18228
+74,LecherÃ­a (Servicio Ordinario),,19.599557,-99.183484
+75,LecherÃ­a (Servicio ExprÃ©s),,19.59847,-99.184689
+76,La Quebrada,,19.591926,-99.188164
+77,PantitlÃ¡n,,19.417218,-99.072065
+78,Calle 6,,19.420874,-99.058319
+79,El Barquito,,19.420024,-99.048276
+80,Maravillas,,19.418994,-99.044438
+81,Vicente Riva Palacio,,19.417962,-99.04063
+82,Virgencitas,,19.415572,-99.03497
+83,NezahualcÃ³yotl,,19.413829,-99.031368
+84,Lago de Chapala,,19.411838,-99.027286
+85,Adolfo LÃ³pez Mateos,,19.4091,-99.021926
+86,Palacio Municipal,,19.407072,-99.017635
+87,Sor Juana InÃ©s de La Cruz,,19.405412,-99.014186
+88,El Castillito,,19.404213,-99.011782
+89,General Vicente Villada,,19.402047,-99.006938
+90,Rayito de Sol,,19.406981,-99.003618
+91,Las MaÃ±anitas,,19.410507,-99.001751
+92,Rancho Grande,,19.415182,-98.999203
+93,Bordo de Xochiaca,,19.415632,-98.995078
+94,Las Torres,,19.414322,-98.989885
+95,Guerrero Chimalli,,19.412698,-98.982696
+96,Las Flores,,19.414636,-98.978571
+97,Canteros,,19.418278,-98.97597
+98,La Presa,,19.42226,-98.971898
+99,Embarcadero,,19.42525,-98.967274
+100,Santa Elena,,19.428761,-98.962746
+101,Ignacio Manuel Altamirano,,19.431396,-98.957071
+102,San Pablo,,19.431392,-98.95213
+103,Los patos,,19.43126,-98.946326
+104,Refugio,,19.429843,-98.941015
+105,Acuitlapilco,,19.429694,-98.9388
+106,ChimalhuacÃ¡n,,19.423864,-98.937201
+107,Indios Verdes,,19.498089,-99.118363
+108,PerifÃ©rico,,19.517723,-99.099094
+109,MartÃ­n Carrera,,19.520888,-99.092989
+110,ClÃ­nica 76,,19.527042,-99.082268
+111,VÃ­a Morelos,,19.530806,-99.075477
+112,Monumento a Morelos,,19.53274,-99.071261
+113,5 de Febrero,,19.534936,-99.065056
+114,Santa Clara,,19.53914,-99.058989
+115,Cerro Gordo,,19.543715,-99.055164
+116,Servicios Administrativos,,19.547266,-99.052914
+117,ClÃ­nica 93,,19.551257,-99.051946
+118,Industrial,,19.557111,-99.049441
+119,Quinta ApariciÃ³n,,19.562179,-99.046823
+120,Tulpetlac,,19.567934,-99.044309
+121,Siervo de la NaciÃ³n,,19.571115,-99.043266
+122,Nuevo Laredo,,19.576638,-99.042472
+123,Laureles,,19.582566,-99.041678
+124,La Viga,,19.591954,-99.039176
+125,San CristÃ³bal,,19.595539,-99.037537
+126,"Puente de Fierro",,19.602957,-99.033696
+127,Izcalli Palomas,,19.612478,-99.0195
+128,"Central de Abastos",,19.616884,-99.008371
+129,Santo TomÃ¡s Chiconautla (Sin Servicio),,19.629624,-99.004063
+130,"Ejido Santo TomÃ¡s",,19.630128,-99.007196
+131,"RevoluciÃ³n",,19.631043,-99.015006
+132,"Margarito F. Ayala",,19.631644,-99.019067
+133,Flores,,19.633059,-99.028541
+134,Bosques,,19.6341,-99.035322
+135,Universidad Mexiquense del Bicentenario,,19.636724,-99.04804
