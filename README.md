@@ -43,9 +43,6 @@ Each segment in the speed datasets is labelled with an OSM way ID which can be m
 
 ## Micromobility and accessibility
 
-
-![hi](./visuals/Svg%20Formats/Cairo/test.svg)
-
 The capabilities of open-source routing engines to model micromobility are a recent development. A standard for micromobility data [(GBFS – General Bikeshare Feed Specification)](https://github.com/MobilityData/gbfs) has been widely adopted only in the past few years. This standard makes (real-time) micromobility data feeds available through an API, and support for it has been added to OpenTripPlanner [link](https://docs.opentripplanner.org/en/v2.0.0/Configuration/#gbfs-configuration). While it is useful for trip planning purposes, a live API does not give us the flexibility required for analysing accessibility or for modeling scenarios.   
 
 ### Approach 
