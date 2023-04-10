@@ -72,4 +72,4 @@ The flowchart below shows the heuristic used to determine which mode combination
 
 #### Accessibility to Jobs - Improvement due to Docked Micromobility (Cairo, Egypt)
 
-![Accessibility to Jobs - Improvement due to Docked Micromobility](./visuals/svg_formats/Cairo/Accessibility_to_Jobs-Improvement_due_to_Docked_Micromobility.svg)
+![Accessibility to Jobs - Improvement due to Docked Micromobility](https://raw.githubusercontent.com/transportforcairo/wri-numo_access-analysis/main/visuals/svg_formats/Cairo/Accessibility_to_Jobs-Improvement_due_to_Docked_Micromobility.svg)
