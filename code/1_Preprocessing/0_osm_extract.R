@@ -1,6 +1,13 @@
-library(osmextract)
+###################################################################################################
+###    The purpose of this script is to edit to download OSM road network data through R        ###
+###    The data could also be downloaded manually through other tools such as the OSM HOT       ###
+###    Export Tool
+###################################################################################################
 
-# --------------------------------- PRPARE THE INPUT DATA --------------------------------- #
+library(osmextract)
+library(sf)
+
+# --------------------------------- PREPARE THE INPUT DATA --------------------------------- #
 
 # city <- "San Francisco"
 # city <- "Minneapolis"
