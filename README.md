@@ -11,15 +11,15 @@ Scripts and edited software tools that comprises the data pipeline enabling acce
 2. **pbf_augmenter**: Python script that embeds road segment speed data into an OSM PBF road network. More details on this process can be found in the section on [editing osm pbf files](#editing-osm-pbf-files).
 3. **Analysis**: Scripts used for calculating travel time matrices and accessibility measures. More details on this process can be found in the section on [micromobility and accessibility](#micromobility-and-accessibility).
 4. **Equity**: These scripts are for the equity analysis conducted for the cities of San Francisco and Minneapolis
-## data
+### data
 intermediate and final data outputs from the analysis. Includes a ["Data Guide" spreadsheet](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/data/Data_Guide.xlsx) with metadata documentation.
-## data_raw
+### data_raw
 Compiled datasets from multiple sources for chosen cities, includes:
  - GTFS
  - OSM road network
  - GBFS
  - Demographic data
-## visuals
+### visuals
 Figures and visualizations generated for the report in original quality
 
 ## Methods 
