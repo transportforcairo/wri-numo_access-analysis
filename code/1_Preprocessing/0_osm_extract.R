@@ -1,7 +1,7 @@
 ###################################################################################################
 ###    The purpose of this script is to edit to download OSM road network data through R        ###
 ###    The data could also be downloaded manually through other tools such as the OSM HOT       ###
-###    Export Tool
+###    Export Tool                                                                              ###
 ###################################################################################################
 
 library(osmextract)
