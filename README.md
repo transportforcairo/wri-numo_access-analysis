@@ -22,7 +22,9 @@ Compiled datasets from multiple sources for chosen cities, includes:
 ## visuals
 Figures and visualizations generated for the report in original quality
 
-## Editing OSM pbf files
+## Methods 
+
+### Editing OSM pbf files
 
 To add traffic data onto road network segments, we need to edit the OSM pbf file that r5 uses to build the routable graph. There is a discussion in r5r about enabling this functionality, but it is still a work in progress (link). 
 
@@ -41,11 +43,11 @@ Each segment in the speed datasets is labelled with an OSM way ID which can be m
   - package?
 
 
-## Micromobility and accessibility
+### Micromobility and accessibility
 
 The capabilities of open-source routing engines to model micromobility are a recent development. A standard for micromobility data [(GBFS – General Bikeshare Feed Specification)](https://github.com/MobilityData/gbfs) has been widely adopted only in the past few years. This standard makes (real-time) micromobility data feeds available through an API, and support for it has been added to OpenTripPlanner [link](https://docs.opentripplanner.org/en/v2.0.0/Configuration/#gbfs-configuration). While it is useful for trip planning purposes, a live API does not give us the flexibility required for analysing accessibility or for modeling scenarios.   
 
-### Approach 
+#### Approach 
 
 Our proposed approach uses GBFS feeds to obtain the geographic scope of micromobility services, and then uses cycling as a proxy for micromobility when calculating travel times for multimodal trips. The logic is as follows: 
 1. Create a variable hexagon grid over the study area (using [this script](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/2.0_variable_hexgrid.R))
@@ -64,12 +66,12 @@ The flowchart below shows the heuristic used to determine which mode combination
  ![Which mode combinations to use when calculating travel times by micromobility](./visuals/readme/mode_combinations_flowchart.png)
  
 
-### Results
+#### Results
 
-#### Spatial Distribution of Docked Micromobility (Cairo, Egypt)
+##### Spatial Distribution of Docked Micromobility (Cairo, Egypt)
 
 ![Spatial Distribution of Docked Micromobility](./visuals/svg_formats/Cairo/Spatial_Distribution_of_Docked_Micromobility.svg)
 
-#### Accessibility to Jobs - Improvement due to Docked Micromobility (Cairo, Egypt)
+##### Accessibility to Jobs - Improvement due to Docked Micromobility (Cairo, Egypt)
 
 ![Accessibility to Jobs - Improvement due to Docked Micromobility](https://raw.githubusercontent.com/transportforcairo/wri-numo_access-analysis/main/visuals/svg_formats/Cairo/Accessibility_to_Jobs-Improvement_due_to_Docked_Micromobility.svg)
