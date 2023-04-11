@@ -1,6 +1,5 @@
 # All Possible Commutes
-This repository contains scripts and datasets from the study conducted by [Transport for Cairo (TfC)](https://transportforcairo.com/) and the [New Urban Mobility Alliance (NUMO)](https://www.numo.global/). 
-<!-- The published study can be found [here]() - TODO: ADD LINK WHEN STUDY IS PUBLISHED --> 
+This repository contains scripts and datasets from the study "*All Possible Commutes - How Micromobility and Realistic Car Travel Times Impact Accessibility Analyses*". The study was conducted by [Transport for Cairo (TfC)](https://transportforcairo.com/) and the [New Urban Mobility Alliance (NUMO)](https://www.numo.global/). The published report and technical appendix can be found [here](https://www.numo.global/resources/all-possible-commutes-accessibility-analysis-micromobility-paper).
  
  ## Repository Overview
  
