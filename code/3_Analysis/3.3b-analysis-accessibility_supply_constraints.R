@@ -1,13 +1,18 @@
 ###################################################################################################
-###    The purpose of this script is to calculate a travel time matrix for each different mode  ###
-###    combination. r5r is used for the calculations (EDIT - SUPPLY CONSTRAINTS)                                           ###
+###    The purpose of this script is to calculate a detailed itinerary for each different mode  ###
+###    combination. Detailed itineraries are necessary to determine, for each OD pair, which    ###
+###    modes are actually being used. The travel_time_matrix function used in                   ###
+###    3.3_accessibility_analysis determines fastest travel times using permitted modes, but    ###
+###    does not return information on which modes were used. We need this information, along    ### 
+###    with probability of finding a shared bike (calculated using MDS data), to determine      ###
+###    accessibility with supply constraints                                                    ###
 ###################################################################################################
 
 ### LIMITATION: 
 # We cannot control bicycle being used as an access mode only in r5r. mode and mode_access
 # are grouped together in the same parameter. 
 # The result is that bicycles are sometimes used as a main mode, even if we put max_bike_dist, as 
-# max_bike_dist only controls access / egress distances. This affects combination 2.1. One woraround 
+# max_bike_dist only controls access / egress distances. This affects combination 2.1. One workaround 
 # is to set shortest = FALSE to get multiple trip options for each OD pair, and then select the one 
 # that matches our conditions (bike used as access only). This is infeasible for large datasets
 
