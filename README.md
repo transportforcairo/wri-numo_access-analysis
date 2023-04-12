@@ -3,7 +3,7 @@ This repository contains scripts and datasets from the study "*All Possible Comm
  
  ## Repository Overview
  
- The repository is organised into the following folders. 
+ The repository is organised into the following folders: 
  ### code
 Scripts and edited software tools that comprises the data pipeline enabling accessibility modeling as per our methodology. Pipeline sequence is as follows:
 1. **Pre-processing**: Set of scripts to download and process data from online sources and prepare datasets for analysis.
@@ -25,11 +25,15 @@ Figures and visualizations generated for the report in original quality
 
 ### Editing OSM pbf files
 
-To add traffic data onto road network segments, we need to edit the OSM pbf file that r5 uses to build the routable graph. There is a discussion in r5r about enabling this functionality, but it is still a work in progress (link). 
+#### Sourcing the data 
 
-Each segment in the speed datasets is labelled with an OSM way ID which can be matched to the way IDs from a recent download of the OSM road network. This underlines the operability of the speed datasets because OSM networks are consumed by many routing engines.  The script written for this task takes in the road network in .osm format, matches the real speed observed on each way or partial way, and adds a maxspeed tag with the real speed to the copied ways or partial ways. This is because the r5 routing engine uses the maxspeed tag to calculate travel times on roads if they are present. If a maxspeed tag is not available for a road, r5 uses a default based on the road type. The data is matched to the latest OSM build of the road network to create an updated PBF file. 
- 
+Freely available, updated data on road-segment level speeds is hard to come across. We used the Uber movement speed dataset [(link)](https://movement.uber.com/explore/london/speeds/query?lang=en-GB&dt[tpb]=ALL_DAY&dt[wd;]=1,2,3,4,5,6,7&dt[dr][sd]=2020-03-01&dt[dr][ed]=2020-03-31&ff=) as well as proprietary Mapbox data. Both give speed data for each OSM road segment, linking the data to the OSM Way ID
 
+#### Using the data for routing 
+
+To add traffic data onto road network segments, we need to edit the OSM pbf file that r5 uses to build the routable graph. There is a discussion in r5r about enabling this functionality, but it is still a work in progress [(link)](https://github.com/ipeaGIT/r5r/issues/289). 
+
+Each segment in the speed datasets is labelled with an OSM way ID which can be matched to the way IDs from a recent download of the OSM road network. This underlines the operability of the speed datasets because OSM networks are consumed by many routing engines.  The [script](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/2_pbf_augmenter/Maxspeed_setter_wfunctions.py) written for this task takes in the road network in .osm format, matches the real speed observed on each way or partial way, and adds a maxspeed tag with the real speed to the copied ways or partial ways. This is because the r5 routing engine uses the maxspeed tag to calculate travel times on roads if they are present. If a maxspeed tag is not available for a road, r5 uses a default based on the road type. The data is matched to the latest OSM build of the road network to create an updated PBF file. 
 
 @ ADHAM - can you (a) edit and elaborate on the method below, and (b) point to specific scripts / even lines of code from our open github repo :
 
@@ -49,12 +53,12 @@ The capabilities of open-source routing engines to model micromobility are a rec
 #### Approach 
 
 Our proposed approach uses GBFS feeds to obtain the geographic scope of micromobility services, and then uses cycling as a proxy for micromobility when calculating travel times for multimodal trips. The logic is as follows: 
-1. Create a variable hexagon grid over the study area (using [this script](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/2.0_variable_hexgrid.R))
+1. Create a variable hexagon grid over the study area (using [this script](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/2.0_variable_hexgrid.R)). This step is optional, as one could use a uniform grid. We prefer to use small (400m diameter) hexagons to justify the assumption that people inside a hexagon have the same public transport and micromobility options. Creating a uniform 400m hexagon layer to cover any big city can lead to computationally expensive routing in step 4 (for n zones, we have n<sup>2</sup> calculations). To reduce the number of calculations, we can create this variable hexagon grid where hexagons are smaller for high population/employment density areas, and larger in low population/emploment density areas. 
 2. Identify locations of micromobility (using [this script](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/1_extract-get_gbfs.R))
    - Docked: station locations 
    - Dockless: service area 
-3. For each zone (grid unit), determine whether it is served by micromobility or not (using [this script](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/2.3_transform-gbfs2zones.R))
-4. Determine travel time between each zone, i.e., OD-pair, using availability of micromobility to determine possible intermodality. Cycling is used as a proxy for micromobility when specifying modes in the routing engine. We create multiple travel time matrices using different mode combinations (see Table 1) . This is done using [this script](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.1_analysis-travel_time_r5.R))
+3. For each zone (grid unit), determine whether it is served by micromobility or not (using [this script](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/2.3_transform-gbfs2zones.R)). For each zone, we consider availability of micromobility at neighboring zones as well. 
+4. Determine travel time between each zone pair, i.e., OD-pair, using availability of micromobility to determine possible intermodality. Cycling is used as a proxy for micromobility when specifying modes in the routing engine. We create multiple travel time matrices using different mode combinations (see Table 1) . This is done using [this script](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.1_analysis-travel_time_r5.R))
 5. Use results from steps 3 and 4 to get travel time using micromobility for each OD pair. The travel times are based on the availability of micromobility, as shown in the table below. This is done using [this script](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.2_analysis-travel_time_scenarios.R)).
 
 
@@ -65,7 +69,7 @@ The flowchart below shows the heuristic used to determine which mode combination
  ![Which mode combinations to use when calculating travel times by micromobility](./visuals/readme/mode_combinations_flowchart.png)
  
 
-#### Results
+#### Examples of Results
 
 ##### Spatial Distribution of Docked Micromobility (Cairo, Egypt)
 
