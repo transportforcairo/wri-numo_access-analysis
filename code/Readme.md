@@ -1,16 +1,83 @@
-# Code 
+# Code Documentation
 
 ## Instructions on applying the method to a new city
 
 1. download the repo to your local machine to use the same file structure
 2. download the following raw data for each city you wish to apply the accessibility framework to (scripts to download and process data from online sources can be found in 1_Preprocessing)
-    - OSM Road Network
-    - GTFS and GBFS for transit and bike-sharing/micromobility
-    - Census data
-    - Hexagon Grids
-    - Elevation data
-3. Run the transformation scripts in 1_Preprocessing
-4. Download real speed data for all roads in your study area (we used Uber Movement or Mapbox)
-5. Run the Maxspeed_Setter_wfunctions script in 2_pbf_augmenter
-6. Run the scripts in 3_Analysis to compute travel time and accessibility and supply contraints
-7. Repurpose the iPython Notebooks for SF or Minneapolis for your city 
+    - **OSM Road Network**: 
+        - Sourcing the data: There are many ways to download osm data. The [HOT OSM Export Tool](https://export.hotosm.org/en/) provides a user-friendly GUI. Alternatively, you could use a package like [osmextract](https://docs.ropensci.org/osmextract/index.html) if you prefer a reproducible pipeline. 
+        - File path This should be added to data_raw/<City_Name>/PBFs
+    - **GTFS feeds** for public transit
+        - File path: data_raw/<City_Name>/GTFS
+        - Validating the feeds: Use [0_edit_gtfs_calendar.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/0_edit_gtfs_calendar.R): When using a multimodal routing engine (such as opentripplanner or r5) you need to specify the date and time of your query (check the [departure_datetime argument](https://ipeagit.github.io/r5r/reference/travel_time_matrix.html) in r5r). This should match the dates in the calendar.txt of the GTFS feeds. If you are dealing with multiple feeds, they could have different start and end dates, especially if they are not published on a regular basis. This script allows you to load all the gtfs feeds in your directory and edit the start and end dates for calendar.txt to match a date that you specify. The feeds are then all valid for the same days
+    - **GBFS** for bike-sharing/micromobility: 
+        - Sourcing the data: We use the [1_extract_get_gbfs](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/1_extract-get_gbfs.R) script to download gbfs data from the [MobilityData gbfs repository](https://github.com/MobilityData/gbfs/blob/master/systems.csv). If you follow the link, you will see a csv file. If you have micromobility data that is not in this list, then you will have to add it manually to the repository
+        - File path: data_raw/<City_Name>/GBFS 
+    - **Census data**
+        - Description: You need a spatial layer for your chosen city. The layer should have administrative boundaries, as well as a column for population and a column for employment
+        - Sourcing the data: The script [1_extract-us_census_data.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/1_extract-us_census_data.R) can be used to download census data for any US city. It relies on the [tidycensus](https://github.com/walkerke/tidycensusle), [lehdr](https://github.com/jamgreen/lehdr), and [tigris](https://github.com/walkerke/tigris) r packages. 
+        - File path: data_raw/<City_Name>/level_i
+    - **Elevation data**
+        - Description: This data is needed for bicycle/micromobility routing. The routing engine we use (r5r) can consider elevation if provided with a .tif file
+        - Sourcing the data: The script [1_extract-download_elev.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/2.2_extract-download_elev.R) uses the [elevatr](https://github.com/jhollist/elevatr) package to download elevation data for any area you specify
+    - **Speed data** (OPTIONAL)
+        - Description: Data that has actual speeds on road segments. It should be a csv with the OSM way ID and the speed
+        - Sourcing the data: We used the Uber Movement (open) and Mapbox (proprietary) data for our analysis. The analysis can be run without this data; the routing engine will use freeflow speeds based on speed limits.
+3. Run the transformation scripts in 1_Preprocessing. It is best to run them in the order they are listed below:
+    - Optional:
+        - [2.0_variablehexgrid.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/2.0_variable_hexgrid.R): Create a variable resolution hexagon grid for use in creating a travel time matrix. Refer to the *Prepocessing* section of the technical appendix on why this can be useful
+    - Necessary
+        - [2.1_transform-census2hexagons.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/2.1_transform-census2hexagons.R): Project data from a census administrative boundary layer to the hexagon layer which is used to create the OD matrix. A hexagon layer is prefered as administrative boundaries can vary greatly in size
+        - [2.3_transform-gbfs2zones.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/2.3_transform-gbfs2zones.R): Project the gbfs data (docked: station locations, dockless: service geography) onto the hexagon layer
+        - [2.4b_transform-validate_gtfs_feeds.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/2.4b_transform-validate_gtfs_feeds.R): Use the command line tool ["gtfstidy"](https://github.com/patrickbr/gtfstidy) to validate all GTFS feeds you have sourced
+4. Run the [Maxspeed_Setter_wfunctions](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/2_pbf_augmenter/Maxspeed_setter_wfunctions.py) script in 2_pbf_augmenter. Refer to the chapter on *Modelling Realistic Car Travel Times* in the technical appendix for an explanation of the logic.
+    - The output should be added to data_raw/<City_Name>/PBFs
+5. Run the scripts in 3_Analysis to compute travel time and accessibility and supply contraints
+    - Necessary
+        - [3.1_analysis-travel_time_r5.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.1_analysis-travel_time_r5.R): Calculate travel time matrices for different (access, egress, main) mode combinations 
+        - [3.2_analysis-travel_time_scenarios.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.2_analysis-travel_time_scenarios.R): Use the travel time matrices output from above to calculate travel times for the mode combinations in the study. Refer to the chapter on *Modelling Intermodal Travel Times* in the Appendix to understand the logic
+        - [3.3_accessibility_analysis.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.3_analysis-accessibility.R): Use the output of 3.2 to calculate a cumulative opportunity measure of accessibility at different travel time thresholds (15, 30, 45, and 60 minutes). Refer to the chapter on *Multimodal Accessibility Analysis* in the technical appendix for an explanation of the method
+    - Optional (not dependant on 3.1, 3.2, 3.3)
+        - [3.3b-analysis-accessibility_supply_constraints.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.3b-analysis-accessibility_supply_constraints.R): This script calculates detailed itineraries for each OD pair. The output is then used to calculate accessibility given micromobility supply constraints, as described in the chapter *Supply Constraints of Shared Micromobility Systems* in the technical appendix. The calculations rely on proprietary MDS data (which we obtained from micromobility providers for specific cities for our study). The data is not available for public use, but we keep the script in the repository as inspiration for anyone wishing to do the same analysis with MDS data
+6. Repurpose the Equity anlaysis iPython Notebooks for SF or Minneapolis for your city. The analysis can be redone for any US city. It only requires the accessibility results from 3.3
+
+
+## Script parameters
+
+There are many parameters in the scripts. Some should not be edited, while some you need to edit. Below is a description of all parameters that need editing and how you should edit them:
+
+- [0_edit_gtfs_calendar.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/0_edit_gtfs_calendar.R)
+    - city: Your chosen city
+    - start_date / end_date: the dates you want the feed to be valid for
+- [1_extract_get_gbfs](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/1_extract-get_gbfs.R)
+    - city: Your chosen city
+- [1_extract-us_census_data.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/1_extract-us_census_data.R)
+    - city: your chosen city 
+    - state: initials of the state the city is in
+    - county: the counties you want to include
+- [2.0_variable_hexgrid.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/2.0_variable_hexgrid.R)
+    - city: your chosen city
+    - layer_name: the name of the administrative layer with the variable that you will base the hexagon resolution on (population, jobs etc)
+    - grid_sizes: a list of hexagon diameters that will be used to create the layer
+    - existing_pop_column: the name of the column in the "city_geom" feature that includes the population variable (you can use another variable)
+    - density_threshold: check the documentation in the script
+
+- [2.1_transform-census2hexagons.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/2.1_transform-census2hexagons.R)
+    - city: your chosen city
+    - layer_name: the administrative layer with the census data
+    - hex_layer_name: the hexagon layer created from 2.0_variable_hexgrid.R
+    - variable_hexgrid: TRUE if we want to use the variable hexgrid created in 2.0, FALSE otherwise. We recommend this is set to TRUE
+    - grid_size: If we will create a fixed resolution hexgrid, what diameter should the hexagons have (in meters)
+
+We have two options: 
+    - OPTION A: create a fixed resolution hexgrid and use that 
+    - OPTION B: use the variable resolution hexgrid we created
+- [2.3_transform-gbfs2zones.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/2.3_transform-gbfs2zones.R)
+    - city: chosen city
+- [2.4b_transform-validate_gtfs_feeds.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/2.4b_transform-validate_gtfs_feeds.R)
+    - city: chosen city
+- [Maxspeed_Setter_wfunctions](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/2_pbf_augmenter/Maxspeed_setter_wfunctions.py) 
+- [3.1_analysis-travel_time_r5.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.1_analysis-travel_time_r5.R): 
+- [3.2_analysis-travel_time_scenarios.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.2_analysis-travel_time_scenarios.R)
+- [3.3_accessibility_analysis.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.3_analysis-accessibility.R)
+- [3.3b-analysis-accessibility_supply_constraints.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.3b-analysis-accessibility_supply_constraints.R)
