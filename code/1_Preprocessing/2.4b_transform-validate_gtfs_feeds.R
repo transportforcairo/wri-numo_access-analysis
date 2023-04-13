@@ -6,9 +6,9 @@
 ###    has the same name                                                                        ### 
 ###################################################################################################
 
-
+city <- "San Francisco"
 # ----- 1. define relative path of folder that contains gtfs feeds
-feed_dir <- "../data_raw/San Francisco/GTFS"
+feed_dir <- paste0("../data_raw/", city, "/GTFS")
 
 # ----- 2. get relative paths of all gtfs feeds
 feeds <- dir(feed_dir, ".zip$", full.names = TRUE)
@@ -80,19 +80,10 @@ validate_feeds <- function(rel_folder_dir){
 }
 
 
-# Run the function
+# ----------------------- Run the function
 
-# San Francisco
-validate_feeds(rel_folder_dir = "../data_raw/San Francisco/GTFS")
+validate_feeds(rel_folder_dir = paste0("../data_raw/", city, "/GTFS"))
 
-# Minneapolis
-validate_feeds(rel_folder_dir = "../data_raw/Minneapolis/GTFS")
-
-# Mexico City
-validate_feeds(rel_folder_dir = "../data_raw/Mexico City/GTFS")
-
-# Cairo
-validate_feeds(rel_folder_dir = "../data_raw/Cairo/GTFS")
 
 
 

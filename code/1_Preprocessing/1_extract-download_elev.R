@@ -1,17 +1,8 @@
-#library(osmextract)
-library(sf)
-library(tidyverse)
 
 # define city 
 #city <- "Mexico City"
 #city <- "Minneapolis"
 city  <- "San Francisco"
-# ----------------------------------------- Download OSM road network data ----------------------------------------- #
-
-# I use the bbbike API and save the exported data to the 'data/gtfs-osm' directory
-# https://extract.bbbike.org/
-
-
 
 # ----------------------------------------- Download elevation data (tif file) ----------------------------------------- #
 
@@ -31,20 +22,3 @@ city_elev <- elevatr::get_elev_raster(city_geom, z= 9, expand = 0.05)
 
 # save
 raster::writeRaster(city_elev, paste0("../data/", city, "/GTFS/city_elev.tif"), overwrite = TRUE)
-
-# Download elevation data (tif file)
-
-# add lts value for cycling based on available infrastructure + osm road type 
-# https://github.com/ITDP/two_step_access/blob/main/prep_bike_osm.py
-
-# Prepare points to query from 
-
-# Edit r5 build config file 
-
-# https://github.com/ipeaGIT/r5r/issues/187#issuecomment-887858477
-library(r5r)
-r5r_core$defaultBuildConfig()
-
-
-
-

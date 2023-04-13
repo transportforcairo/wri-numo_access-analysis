@@ -7,21 +7,14 @@ library(sf)
 library(tidyverse)
 
 
-# # USA
-# city <- "San Francisco"
-# city <- "Minneapolis"
-# layer_name <- "census_bg.geojson"
-# hex_layer_name  <- "variable_hexgrid.geojson"
-
-# Mexico City
-# city <- "Mexico City"
-# layer_name <- "census_pop_jobs.geojson"
-# hex_layer_name  <- "variable_hexgrid.geojson"
-
-# Cairo
-city <- "Cairo"
-layer_name <- "gcr_shiyakhas_with_jobs.geojson"
+city <- "San Francisco"
+layer_name <- "census_bg.geojson"
 hex_layer_name  <- "variable_hexgrid.geojson"
+# TRUE: use a variable hexgrid. FALSE: Use a fixed diameter hexgrid
+variable_hexgrid = TRUE
+# hexagon diamater (meters) if we will create a fixed resolution hexagon grid
+grid_size <- 400
+
 
 # geometry data
 city_geom <- st_read(paste0("../data_raw/", city, "/level_i/", layer_name)) %>%
@@ -29,41 +22,32 @@ city_geom <- st_read(paste0("../data_raw/", city, "/level_i/", layer_name)) %>%
   st_transform(3857)
 
 # check that columns are numeric and convert if not
-glimpse(city_geom)
-if(city == "Mexico City"){
-  city_geom <- city_geom %>% mutate(across(pobtot:pobfem, ~as.numeric(.)))
-}
-glimpse(city_geom)
+
+# glimpse(city_geom)
+# if(city == "Mexico City"){
+#   city_geom <- city_geom %>% mutate(across(pobtot:pobfem, ~as.numeric(.)))
+# }
+# glimpse(city_geom)
 
 # --------------------------------- Hexagon Grid Layer ----------------------------- #
 
-# ------- OPTION A: Create a Hexagon Grid Layer 
+if(variable_hexgrid == FALSE){
+  # ------- OPTION A: Create a Hexagon Grid Layer 
+  city_geom_grid <- st_make_grid(city_geom, cellsize = grid_size, square = FALSE) %>%
+    st_as_sf() %>% st_make_valid() %>%
+    # crop to study area boundaries
+    st_filter(city_geom, .predicate = st_intersects) %>%
+    # add unique id for each row
+    mutate(cell_id = row_number())
+} else{
+  # ------- OPTION B: Read in Variable Resolution Grid Layer 
+  city_geom_grid <- st_read(paste0("../data_raw/", city, "/level_i/", hex_layer_name)) %>%
+    st_transform(3857)
+  # convert hex_diameter column to character, so that it's not affected when getting ratios below
+  city_geom_grid <- city_geom_grid %>% mutate(hex_diameter = as.character(hex_diameter))
+  
+}
 
-
-# # # 1. create grid
-# #
-# # --- select grid size (diameter in meters)
-# grid_size <- 400
-# #
-# # # --- create the grid
-# city_geom_grid <- st_make_grid(city_geom, cellsize = grid_size, square = FALSE) %>%
-#   st_as_sf() %>% st_make_valid() %>%
-#   # crop to study area boundaries
-#   st_filter(city_geom, .predicate = st_intersects) %>%
-#   # add unique id for each row
-#   mutate(cell_id = row_number())
-# # 
-# # plot to check
-# plot(st_geometry(city_geom_grid))
-# mapview::mapviewOptions(fgb = FALSE)
-# mapview::mapview(city_geom_grid) + mapview::mapview(city_geom)
-
-
-# ------- OPTION B: Read in Variable Resolution Grid Layer 
-city_geom_grid <- st_read(paste0("../data_raw/", city, "/level_i/", hex_layer_name)) %>%
-  st_transform(3857)
-# convert hex_diameter column to character, so that it's not affected when getting ratios below
-city_geom_grid <- city_geom_grid %>% mutate(hex_diameter = as.character(hex_diameter))
 # we will need this matching table to join the hex diameter column back at the end
 matching_table <- city_geom_grid %>% st_drop_geometry()
 
@@ -135,9 +119,12 @@ city_geom_grid <- city_geom_grid %>% st_transform(4326) %>%
 # # comparison
 # c <- a %>% bind_rows(b)
 
-city_geom_grid <- city_geom_grid %>% select(-hex_diameter) %>%
-  left_join(matching_table, by = "cell_id") %>%
-  mutate(hex_diameter = as.numeric(hex_diameter))
+if(variable_hexgrid == TRUE){
+  city_geom_grid <- city_geom_grid %>% select(-hex_diameter) %>%
+    left_join(matching_table, by = "cell_id") %>%
+    mutate(hex_diameter = as.numeric(hex_diameter))
+}
+
 
 # remove invalid geometries
 city_geom_grid <- city_geom_grid %>% filter(st_is_valid(.) == TRUE)

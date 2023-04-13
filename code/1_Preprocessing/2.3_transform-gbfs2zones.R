@@ -9,20 +9,20 @@ library(sf)
 
 # ------------------------------------ Load the data ------------------------------------ #
 
-#city = "Minneapolis"
+city = "Minneapolis"
 #city = "San Francisco"
 #city = "Mexico City"
-city = "Cairo"
+#city = "Cairo"
 
 
 # variables that differ depending on the city
-city_variables <- tribble(
-  ~city,  ~provider_docked, ~provider_dockless, 
-  "San Francisco", "docked_Bay Wheels" ,  "dockless_Spin San Francisco", 
-  "Minneapolis", "docked_Nice Ride Minnesota",  "dockless_Spin Minneapolis", 
-  "Mexico City", "docked_ECOBICI",  NA,
-  "Cairo", "docked_Donkey_Republic",  NA
-)
+# city_variables <- tribble(
+#   ~city,  ~provider_docked, ~provider_dockless, 
+#   "San Francisco", "docked_Bay Wheels" ,  "dockless_Spin San Francisco", 
+#   "Minneapolis", "docked_Nice Ride Minnesota",  "dockless_Spin Minneapolis", 
+#   "Mexico City", "docked_ECOBICI",  NA,
+#   "Cairo", "docked_Donkey_Republic",  NA
+# )
 
 # --- docks
 
