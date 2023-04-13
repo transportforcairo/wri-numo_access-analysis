@@ -8,10 +8,10 @@ library(gbfs)
 library(tidyverse)
 library(sf)
 
+city <- "San Francisco"
+
 # 1. ---------- Identify all available feeds
 gbfs_feeds <- gbfs::get_gbfs_cities()
-
-
 
 # 2. ---------- Identify all DOCKED micromobility providers in the city
 
@@ -92,19 +92,6 @@ get_stations_in_city = function(city, feed_list){
   return(results)
 }
 
-# Minneapolis
-docks_mn <- get_stations_in_city(city = "Minneapolis", 
-                                 feed_list = gbfs_feeds)
-
-# Save
-st_write(docks_mn, "../data_raw/Minneapolis/GBFS/gbfs_stations.geojson", delete_dsn = TRUE)
-
-# San Francisco
-docks_sf <- get_stations_in_city(city = "San Francisco", 
-                                 feed_list = gbfs_feeds)
-
-st_write(docks_sf, "../data_raw/San Francisco/GBFS/gbfs_stations.geojson", delete_dsn = TRUE)
-
 
 # 3. -------- Identify all DOCKLESS micromobility providers in the city
 
@@ -171,12 +158,23 @@ get_dockless_zones = function(city, feed_list){
   return(results)
 }
 
-# Minneapolis
-dockless_mn <- get_dockless_zones(city = "Minneapolis", 
-                                  feed_list = gbfs_feeds)
+# ---------- Run the code
+
+# docked
+
+# Run the code
+docks <- get_stations_in_city(city = city, 
+                              feed_list = gbfs_feeds)
 
 # Save
-st_write(dockless_mn, "../data_raw/Minneapolis/GBFS/gbfs_zones.geojson", delete_dsn = TRUE)
+st_write(docks, paste0("../data_raw/", city, "/GBFS/gbfs_stations.geojson"), delete_dsn = TRUE)
+
+# dockless
+dockless <- get_dockless_zones(city = city, 
+                               feed_list = gbfs_feeds)
+
+# Save
+st_write(dockless_mn, paste0("../data_raw/", city, "/GBFS/gbfs_zones.geojson"), delete_dsn = TRUE)
 
 
 # San Francisco
