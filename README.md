@@ -5,13 +5,13 @@ This repository contains scripts and datasets from the study "*All Possible Comm
  
  The repository is organised into the following folders: 
  ### code
-Scripts and edited software tools that comprises the data pipeline enabling accessibility modeling as per our methodology. Pipeline sequence is as follows:
+Scripts and edited software tools that comprises the data pipeline enabling accessibility modeling as per our methodology. You will find instructions on how to apply the analysis to the city of your choosing in the README within. Pipeline sequence is as follows:
 1. **Pre-processing**: Set of scripts to download and process data from online sources and prepare datasets for analysis.
 2. **pbf_augmenter**: Python script that embeds road segment speed data into an OSM PBF road network. More details on this process can be found in the section on [editing osm pbf files](#editing-osm-pbf-files).
 3. **Analysis**: Scripts used for calculating travel time matrices and accessibility measures. More details on this process can be found in the section on [micromobility and accessibility](#micromobility-and-accessibility).
-4. **Equity**: These scripts are for the equity analysis conducted for the cities of San Francisco and Minneapolis
+4. **Equity**: These scripts are for the equity analysis conducted for US cities (San Francisco Bay Area and Minneapolis-St Paul in our paper)
 ### data
-intermediate and final data outputs from the analysis. Includes a ["Data Guide" spreadsheet](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/data/Data_Guide.xlsx) with metadata documentation.
+Intermediate and final data outputs from the analysis. Includes a ["Data Guide" spreadsheet](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/data/Data_Guide.xlsx) with metadata documentation.
 ### data_raw
 Compiled datasets from multiple sources for chosen cities, includes:
  - GTFS
@@ -27,23 +27,33 @@ Figures and visualizations generated for the report in original quality
 
 #### Sourcing the data 
 
-Freely available, updated data on road-segment level speeds is hard to come across. We used the Uber movement speed dataset [(link)](https://movement.uber.com/explore/london/speeds/query?lang=en-GB&dt[tpb]=ALL_DAY&dt[wd;]=1,2,3,4,5,6,7&dt[dr][sd]=2020-03-01&dt[dr][ed]=2020-03-31&ff=) as well as proprietary Mapbox data. Both give speed data for each OSM road segment, linking the data to the OSM Way ID
+Freely available, updated data on road-segment level speeds is hard to come by. We used the Uber movement speed dataset [(link)](https://movement.uber.com/explore/london/speeds/query?lang=en-GB&dt[tpb]=ALL_DAY&dt[wd;]=1,2,3,4,5,6,7&dt[dr][sd]=2020-03-01&dt[dr][ed]=2020-03-31&ff=) as well as proprietary Mapbox data. Both give speed data at a high resolution, an OSM road segment (node to node), which rolls up to an OSM Way (collection of nodes).
 
 #### Using the data for routing 
 
 To add traffic data onto road network segments, we need to edit the OSM pbf file that r5 uses to build the routable graph. There is a discussion in r5r about enabling this functionality, but it is still a work in progress [(link)](https://github.com/ipeaGIT/r5r/issues/289). 
 
-Each segment in the speed datasets is labelled with an OSM way ID which can be matched to the way IDs from a recent download of the OSM road network. This underlines the operability of the speed datasets because OSM networks are consumed by many routing engines.  The [script](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/2_pbf_augmenter/Maxspeed_setter_wfunctions.py) written for this task takes in the road network in .osm format, matches the real speed observed on each way or partial way, and adds a maxspeed tag with the real speed to the copied ways or partial ways. This is because the r5 routing engine uses the maxspeed tag to calculate travel times on roads if they are present. If a maxspeed tag is not available for a road, r5 uses a default based on the road type. The data is matched to the latest OSM build of the road network to create an updated PBF file. 
+Each segment in the speed dataset is labelled with an OSM way ID, a start node, and an end node which can be matched to the segments and ways from a recent download of the OSM road network. This underlines the operability of the speed datasets because OSM networks are consumed by many routing engines.  The [script](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/2_pbf_augmenter/Maxspeed_setter_wfunctions.py) written for this task takes in the road network in .osm format, matches the real speed observed on each way or partial way, and adds a maxspeed tag with the real speed to the copied ways or partial ways. This is because the r5 routing engine uses the maxspeed tag to calculate travel times on roads if they are present. If a maxspeed tag is not available for a road, r5 uses a default based on the road type. The data is matched to the latest OSM build of the road network to create an updated PBF file. 
 
-@ ADHAM - can you (a) edit and elaborate on the method below, and (b) point to specific scripts / even lines of code from our open github repo :
+The logic of the maxspeed_setter script is as follows. We iterate over each way in the OSM network to check if there is a real speed reported from Uber/Mapbox for any of the way's child nodes. For each way, we take the list of nodes and query the speeds dataset for segments with matching start and end nodes. Then we iterate over each reported speed and if its in the same direction of travel as the way, we copy the nodes and all their tags to a new synthetic way with a new way ID, counting sequentuially up from the newwayID_seed provided in the inputs. The new way gets an extra tag “synthetic = yes” as well as a maxspeed tag with its value as the real speed from the speeds dataframe. If there was an existing maxspeed, it is overwritten, otherwise a new maxspeed tag is created. Once all new ways are created, the nodes on the original ways that have been copied to synthetic ways are deleted from the road network. This is done first by removing the copied nodes from the start of the original way, then removing nodes from the end of the copied way, and finally, middle segments of the original way are removed. If the original way is left with gaps in its node sequence, it is replaced with new ways that have continuous node sequences and no real speed tag. Ways left with only one node are deleted.
 
-* Convert pbf file to xml
-  - What package did you use?
-* Use the xml.etree.EleentTree python module to query the xml file
-  - Replace maxspeed:car values with values from Uber data
-  - Elaborate on logic
-* Convert xml to pbf
-  - package?
+
+
+1. Convert pbf file to xml
+    - We used Osmium, a command line tool that works with OSM, to convert the pbf to xml (and back again after the mxspeed_setter function)
+
+2. Run the Python script ["Maxspeed_setter_wfunctions.py"](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/2_pbf_augmenter/Maxspeed_setter_wfunctions.py) from the command line after the following:
+
+    * Change the following input variables in the script: 
+       - road_path: the path ro the .xml OSM road network 
+       - newwayID_seed: for naming, can be left at 1000
+       - output_file_name: a string to name the output .xml file
+       - avgspeed: this is the real speed from Uber/Mapbox as csv
+       - cityunits: string 'mph' or 'kph'
+    - uncomment the colnames and speedsDFpeak variables for the appropriaate data source (Uber or Mapbox) on lines 40,41, and 44
+  
+3. Convert xml to pbf
+    - use Osmium in the command line once again to convert the xml output to pbf
 
 
 ### Micromobility and accessibility
