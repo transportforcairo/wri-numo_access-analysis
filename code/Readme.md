@@ -2,7 +2,7 @@
 
 ## Instructions on applying the method to a new city
 
-1. download the repo to your local machine to use the same file structure
+1. clone the repo to your local machine to use the same file structure
 2. download the following raw data for each city you wish to apply the accessibility framework to (scripts to download and process data from online sources can be found in 1_Preprocessing)
     - **OSM Road Network**: 
         - Sourcing the data: There are many ways to download osm data. The [HOT OSM Export Tool](https://export.hotosm.org/en/) provides a user-friendly GUI. Alternatively, you could use a package like [osmextract](https://docs.ropensci.org/osmextract/index.html) if you prefer a reproducible pipeline. 
@@ -74,10 +74,28 @@ We have two options:
     - OPTION B: use the variable resolution hexgrid we created
 - [2.3_transform-gbfs2zones.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/2.3_transform-gbfs2zones.R)
     - city: chosen city
+    - docked_provider_name/dockless_provider_name: edit these variables based on the name of your provider. This isn't necessary if you got the gbfs data through the 1_extract_get_gbfs.R script(the provider column will exist if so)
+    - *census_matched* function: replace argument for docks/dockless should be NULL if the layer does not exist (city doesn't have the service)
+    - *census_matched_neighbors* function: docked_col / dockless_col arguments should be the name of the provider you want to use for the anlysis. If there are more than one docked services provider in a city, choose one (same appllies for dockless). The name should match exactly with the name of the provider in the "provider" column of the docks/dockless layer
 - [2.4b_transform-validate_gtfs_feeds.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/2.4b_transform-validate_gtfs_feeds.R)
     - city: chosen city
 - [Maxspeed_Setter_wfunctions](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/2_pbf_augmenter/Maxspeed_setter_wfunctions.py) 
-- [3.1_analysis-travel_time_r5.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.1_analysis-travel_time_r5.R): 
+- [3.1_analysis-travel_time_r5.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.1_analysis-travel_time_r5.R): This script could be run twice, once with an unedited pbf file, and once with a pbf file produced by *Maxspeed_setter_wfunctions* (if you have road segment speed data)
+    - city: chosen city
+    - congested: "yes" if running analysis using an osm.pbf with congested speeds, "no" if using an unedited .pbf file
+    - pbf_files tribble: create a row with you city name, name of freeflow pbf file, name of congested pbf file (use the existing table as a reference, and remove the example rows if you want to)
+    - departure_datetime: edit this so it matches the validity period of your gtfs feeds / the day you want to run the analysis (0_edit_gtfs_calendar.R can help with this)
+    - time_window / percentiles / max_walk_distance: check r5r documentation and edit if you want
 - [3.2_analysis-travel_time_scenarios.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.2_analysis-travel_time_scenarios.R)
+    - city: chosen city
+    - od_real_speeds: 1 if we have an od matrix based on congested speeds, 0 if we don't
+    - docked: 1 if we have a docked service, 0 if we don't 
+    - dockless: 1 if we have a dockless service, 0 if we don't 
 - [3.3_accessibility_analysis.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.3_analysis-accessibility.R)
-- [3.3b-analysis-accessibility_supply_constraints.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.3b-analysis-accessibility_supply_constraints.R)
+    - city: chosen city
+    - city metadata tribble: use the existing table as a reference. The jobs column should match the name of the jobs column in the city_geom layer
+    - get_access_multiple function: 
+        - cutoff_times: can take a list of numbers. If you want accessibility at 60, 45, and 30 minutes, use c(30, 45, 60)
+        - job_col: the name of the job column in single brackets
+- [3.3b-analysis-accessibility_supply_constraints.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.3b-analysis-accessibility_supply_constraints.R): See the description for this script above
+- [Equity_Minneapolis.ipynb](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/4_Equity/Equity_Minneapolis.ipynb) and [Equity_SF.ipynb](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/4_Equity/Equity_SF.ipynb)

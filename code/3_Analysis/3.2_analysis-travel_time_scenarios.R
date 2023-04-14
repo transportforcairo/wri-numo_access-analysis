@@ -98,49 +98,6 @@ gc()
 
 # --- add population density column - parking time will be informed by this value
 
-# chunk <- 2500000
-# # number of iterations. We slice the zone layer up and apply the function on a subset (chunk) of rows
-# #iterations <- floor(nrow(zone_layer)/chunk) + 1
-# # if number of chunks is a multiple of number of rows, then the number of iterations = rows / chunks, else (rows / chunks) + 1
-# iterations <- ifelse((nrow(tt_matrix_city)/chunk) %% 1 == 0, 
-#                      nrow(tt_matrix_city)/chunk , 
-#                      floor(nrow(tt_matrix_city)/chunk) + 1)
-# 
-# # empty list to store results from each iteration (chunk)
-# results <- vector(mode = "list", length = ceiling(nrow(tt_matrix_city)/chunk))
-# # for loop for chunks
-# for(i in 1:iterations){
-#   
-#   # determine the slice of the od pair buffer that we will operate on in this iteration
-#   from_row <- 1 + ((i-1)*chunk) 
-#   to_row <- min(i*chunk, nrow(tt_matrix_city))
-#   
-#   tt_layer_chunk <- tt_matrix_city[from_row:to_row,]
-#   
-#   tt_layer_chunk <- tt_layer_chunk %>% 
-#     # add pop density in origin zone
-#     # inner_join(city_pop_density, by = c("fromId" = "cell_id")) %>%
-#     # # add suffix to pop_density column to indicate that it refers to the origin zone
-#     # rename_with(.fn = ~ paste0(.x, "_o"), .cols = "pop_density") %>%
-#     # add pop density in destination zone
-#     inner_join.(city_pop_density, by = c("toId" = "cell_id")) %>%
-#     # add suffix to pop_density column to indicate that it refers to the destination zone
-#     rename_with.(.fn = ~ paste0(.x, "_d"), .cols = "pop_density") 
-#   
-#   results[[i]] <- tt_layer_chunk
-#   print(paste0("finished ", to_row, " rows out of ", nrow(tt_matrix_city)))
-# }
-# 
-# rm(tt_layer_chunk)
-# rm(tt_matrix_city)
-# gc()
-# 
-# tt_matrix_city <- bind_rows.(results)
-# rm(results)
-# gc()
-
-
-# # # --- add population density column - parking time will be informed by this value
 tt_matrix_city <- tt_matrix_city %>%
   # add pop density in destination zone
   left_join.(city_pop_density, by = c("toId" = "cell_id")) %>%
@@ -167,20 +124,6 @@ tt_matrix_city <- tt_matrix_city %>%
 
 
 # Information on each provider, used to calculate travel times for the micromobility combination
-# mm_columns <- tribble(
-#   ~city, ~provider_name, ~electric, 
-#   # San Francisco
-#   "San Francisco", "docked_Bay.Wheels" ,  FALSE,
-#   "San Francisco", "dockless_Bird.San.Francisco",  TRUE,
-#   "San Francisco", "dockless_Spin.San.Francisco",  TRUE,
-#   # Minneapolis
-#   "Minneapolis", "docked_Lyft.Scooters.Minneapolis",  TRUE,
-#   "Minneapolis", "docked_Nice.Ride.Minnesota",  TRUE,
-#   "Minneapolis", "dockless_Spin.Minneapolis",  TRUE,
-#   # Mexico City
-#   "Mexico City", "docked_ECOBICI",  FALSE
-#   # Cairo
-# )
 
 mm_columns <- tribble(
   ~city, ~provider_name, ~electric, 

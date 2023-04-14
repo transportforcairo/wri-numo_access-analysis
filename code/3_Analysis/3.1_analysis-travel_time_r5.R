@@ -107,13 +107,6 @@ if(congested == "yes"){
 #                      use_elevation = TRUE,   # we need to download a tiff file and then turn this to TRUE
 #                      overwrite = TRUE) # turn to true once we have elevation
 
-
-# ------------------------------------- Determine GTFS Calendar Dates ------------------------------------- #
-
-# (1) Merge GTFS feeds    # --- DO THIS IN A SEPERATE SCRIPT
-# (2) Determine GTFS validity period from calendar. If we pass a date outside of the calendar window, the 
-# GTFS will not be used in routing
-
 # ------------------------------------- Define combinations ------------------------------------- #
 
 # --- tibble with all mode combinations 
@@ -142,20 +135,7 @@ combinations <- tribble(
 max_walk_dist <- 1000   # meters
 max_trip_duration <- 75 # minutes
 
-# change this later. Read the GTFS feeds and identify their calendar period
-
-# Mexico City
-# departure_datetime <- as.POSIXct("24-01-2022 07:30:00",
-#                                  format = "%d-%m-%Y %H:%M:%S")
-# San Francisco
-# departure_datetime <- as.POSIXct("10-01-2022 07:30:00",
-#                                  format = "%d-%m-%Y %H:%M:%S")
-
-# Minneapolis
-# departure_datetime <- as.POSIXct("24-01-2022 07:30:00",
-#                                  format = "%d-%m-%Y %H:%M:%S")
-
-# generic. Works for all cities after we updated the calendar.txt
+# This needs to be within the start_date and end_date of the calendar.txt (0_edit_gtfs_calendar.R can help with this)
 departure_datetime <- as.POSIXct("24-01-2022 07:30:00",
                                  format = "%d-%m-%Y %H:%M:%S")
 

@@ -9,13 +9,6 @@ library(tmap)
 
 
 # ----------------------------------------- Load in the data ----------------------------------------- #
-#city <- "San Francisco"
-#city <- "Minneapolis"
-#job_cols <- c("C000")   # what other columns do we want
-city <- "Mexico City"
-# job_cols <- "jobs" 
-# city <- "Cairo"
-# job_cols <- "jobs_total" 
 
 # we use this table as a reference when running code for a specific city
 city_metadata <- tribble(
@@ -234,9 +227,6 @@ st_write(city_tt_access, paste0("../data/", city, "/level_i_ii/accessibility_res
 city_tt_access_plot <- city_tt_access %>% 
   select(c(cell_id,
            contains(c("tt_pt", "bicycle", "dock", "jobs_tt_car_parking_acc_egr"))))
-
-
-
 
 
 # long format for tmap facet plot
