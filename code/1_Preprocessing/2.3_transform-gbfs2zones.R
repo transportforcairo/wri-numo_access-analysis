@@ -9,50 +9,35 @@ library(sf)
 
 # ------------------------------------ Load the data ------------------------------------ #
 
-city = "Minneapolis"
-#city = "San Francisco"
+city = "San Francisco"
 #city = "Mexico City"
-#city = "Cairo"
 
+# edit these variables based on the name of your provider. This isn't necessary if you got the gbfs data
+# through the 1_extract_get_gbfs.R script
+docked_provider_name <- "docked_provider_name"
+dockless_provider_name <- "dockless_provider_name"
 
-# variables that differ depending on the city
-# city_variables <- tribble(
-#   ~city,  ~provider_docked, ~provider_dockless, 
-#   "San Francisco", "docked_Bay Wheels" ,  "dockless_Spin San Francisco", 
-#   "Minneapolis", "docked_Nice Ride Minnesota",  "dockless_Spin Minneapolis", 
-#   "Mexico City", "docked_ECOBICI",  NA,
-#   "Cairo", "docked_Donkey_Republic",  NA
-# )
+# --- Read in: docked bikes (change layer name if it is different)
+docks <- st_read(paste0("../data_raw/", city, "/GBFS/gbfs_stations.geojson")) %>%
+  st_make_valid() %>% 
+  # create a "provider column if it does not exist
+  rowwise() %>%
+  mutate(provider = ifelse("provider" %in% names(.), provider, docked_provider_name)) %>%
+  ungroup()
 
-# --- docks
-
-# Minneapolis / San Francisco
-if (city %in% c("San Francisco", "Minneapolis")){
-  docks <- st_read(paste0("../data_raw/", city, "/GBFS/gbfs_stations.geojson")) %>%
-    st_make_valid()
-  
-  dockless <- st_read(paste0("../data_raw/" , city, "/GBFS/gbfs_zones.geojson")) %>%
-    st_make_valid()
-  
-} else if (city == "Mexico City"){
-  docks <- st_read(paste0("../data_raw/", city, "/GBFS/gbfs_stations.geojson")) %>%
-    mutate(provider = "ECOBICI") %>%
-    st_make_valid()
-  
-} else if (city == "Cairo"){
-  docks <- st_read(paste0("../data_raw/", city, "/GBFS/bikeshare.geojson")) %>%
-    mutate(provider = "Donkey_Republic") %>%
-    st_make_valid()
-}
+# --- Read in: dockless zones 
+dockless <- st_read(paste0("../data_raw/" , city, "/GBFS/gbfs_zones.geojson")) %>%
+  st_make_valid() %>%
+  # create a "provider column if it does not exist
+  rowwise() %>%
+  mutate(provider = ifelse("provider" %in% names(.), provider, dockless_provider_name)) %>%
+  ungroup()
 
 
 
 # --- census data 
 
 census <- st_read(paste0("../data_raw/", city, "/level_i/census_hex.geojson"))
-
-# US blocks
-# census_b_sf <- st_read("../data_raw/San Francisco/level_i/census_san_francisco_block.geojson")  # San Francisco
 
 # -----------------------  Functions to match identify if a zone has docked / dockless service ----------------------- #
 
@@ -88,7 +73,7 @@ match_docked_to_zones = function(city_layer,           # census / hexagons
     # remove the geometry so that we can run the distinct function 
     st_drop_geometry() %>%
     distinct(zone_id, provider, .keep_all = TRUE) 
-
+  
   # --- pivot wider to get one row per zone, and all providers as columns with binary 0/1 values to indicate availability
   joined_layer <- joined_layer %>% 
     pivot_wider(names_from = provider, 
@@ -99,21 +84,21 @@ match_docked_to_zones = function(city_layer,           # census / hexagons
   # --- join results onto original layer 
   city_layer <- city_layer %>%
     left_join(joined_layer, by = "zone_id")
-
+  
   # --- replace na values with 0 for provider columns
   city_layer <- city_layer%>%
     mutate_at(vars(matches("docked_")), ~replace_na(., 0))
   
   # transform to desired crs
   city_layer <- city_layer %>% st_transform(4326)
-
+  
   return(city_layer)
 }
 
 
-# census_bg_mn_docked <- match_docked_to_zones(city_layer = census_bg_mn, 
-#                                              docked_stations = docks_mn,
-#                                              id_col = GEOID)
+# census_matched_docked <- match_docked_to_zones(city_layer = census_hex, 
+#                                                docked_stations = docks,
+#                                                id_col = GEOID)
 
 
 
@@ -188,7 +173,7 @@ match_providers_to_zones = function(city_layer,
   
   # ---------- DOCKED
   
-  if(!is.na(docked_stations)){
+  if(!is.null(docked_stations)){
     # --- select necessary columns from each layer
     city_layer_temp <- city_layer %>% 
       select(zone_id) 
@@ -240,7 +225,7 @@ match_providers_to_zones = function(city_layer,
   
   # ---------- DOCKLESS
   
-  if(!is.na(dockless_zones)){
+  if(!is.null(dockless_zones)){
     
     # --- select necessary columns from each layer
     city_layer_temp <- city_layer %>% 
@@ -300,21 +285,10 @@ match_providers_to_zones = function(city_layer,
 
 # ----- Run function 
 
-# San Francisco / Minneapolis
-if (city %in% c("San Francisco", "Minneapolis")){
-  # San Francisco / Minneapolis
-  census_matched <- match_providers_to_zones(city_layer = census,
-                                             docked_stations = docks,
-                                             dockless_zones = dockless,
-                                             id_col = GEOID)
-} else if(city %in% c("Mexico City", "Cairo")){
-  # Mexico City/Cairo
-  census_matched <- match_providers_to_zones(city_layer = census,
-                                             docked_stations = docks,
-                                             dockless_zones = NA,
-                                             id_col = GEOID)
-  
-}
+census_matched <- match_providers_to_zones(city_layer = census,
+                                           docked_stations = docks, # replace with NULL if layer does not exist
+                                           dockless_zones = dockless, # replace with NULL if layer does not exist
+                                           id_col = GEOID)
 
 
 # -----------------------  Availability of docked/dockless in neighbouring zones ----------------------- #
@@ -336,7 +310,7 @@ availability_neighbors = function(layer, docked_col, dockless_col){
   #docked_col <- sym(docked_col)
   docked_col <- ifelse(is.na(docked_col), docked_col, sym(docked_col))
   dockless_col <- ifelse(is.na(dockless_col), dockless_col, sym(dockless_col))
-
+  
   # intersect geometry with itself
   layer_matrix <- layer %>% st_intersects(.)
   # convert result from list to dataframe
@@ -344,7 +318,7 @@ availability_neighbors = function(layer, docked_col, dockless_col){
   # join onto original layer which has info on docked / dockless service availability at each zone 
   layer_matrix_meta <- layer_matrix_df %>% 
     left_join(layer, by = c("col.id" = "cell_id")) 
-
+  
   
   # get number of stations (docked) / zones (dockless) that are in the zone + all its neighboring zones
   layer_matrix_meta <- layer_matrix_meta %>% 
@@ -360,30 +334,33 @@ availability_neighbors = function(layer, docked_col, dockless_col){
 
 # --- apply the function
 
-if (city == "San Francisco"){
-  # San Francisco
-  census_matched_neighbors <- availability_neighbors(layer = census_matched,
-                                                     docked_col = "docked_Bay Wheels",
-                                                     dockless_col = "dockless_Spin San Francisco")
-  
-} else if(city == "Minneapolis"){
-  # Minneapolis
-  census_matched_neighbors <- availability_neighbors(layer = census_matched,
-                                                     docked_col = "docked_Nice Ride Minnesota",
-                                                     dockless_col = "dockless_Spin Minneapolis")
-  
-} else if(city == "Mexico City"){
-  # Mexico city
-  census_matched_neighbors <- availability_neighbors(layer = census_matched,
-                                                     docked_col = "docked_ECOBICI",
-                                                     dockless_col = NA)
-  
-} else if(city == "Cairo"){
-  # Cairo
-  census_matched_neighbors <- availability_neighbors(layer = census_matched,
-                                                     docked_col = "docked_Donkey_Republic",
-                                                     dockless_col = NA)
-}
+census_matched_neighbors <- availability_neighbors(layer = census_matched,
+                                                   docked_col = "docked_Bay Wheels", # edit: replace with the name of the provider in your data. If more than one, pick one
+                                                   dockless_col = "dockless_Spin San Francisco") # edit: replace with the name of the provider in your data
+# if (city == "San Francisco"){
+#   # San Francisco
+#   census_matched_neighbors <- availability_neighbors(layer = census_matched,
+#                                                      docked_col = "docked_Bay Wheels",
+#                                                      dockless_col = "dockless_Spin San Francisco")
+#   
+# } else if(city == "Minneapolis"){
+#   # Minneapolis
+#   census_matched_neighbors <- availability_neighbors(layer = census_matched,
+#                                                      docked_col = "docked_Nice Ride Minnesota",
+#                                                      dockless_col = "dockless_Spin Minneapolis")
+#   
+# } else if(city == "Mexico City"){
+#   # Mexico city
+#   census_matched_neighbors <- availability_neighbors(layer = census_matched,
+#                                                      docked_col = "docked_ECOBICI",
+#                                                      dockless_col = NA)
+#   
+# } else if(city == "Cairo"){
+#   # Cairo
+#   census_matched_neighbors <- availability_neighbors(layer = census_matched,
+#                                                      docked_col = "docked_Donkey_Republic",
+#                                                      dockless_col = NA)
+# }
 
 
 
@@ -398,99 +375,4 @@ mapview::mapview(census_matched_neighbors, zcol = "dockless_service") + mapview:
 st_write(census_matched_neighbors, paste0("../data/", city, "/level_i_ii/zones_w_micromobility_providers.geojson"), delete_dsn = TRUE)
 
 #census_matched_neighbors <- st_read(paste0("../data/", city, "/level_i_ii/zones_w_micromobility_providers.geojson"))
-
-# ---------------------------------   Plots --------------------------------- #
-library(tmap)
-
-# Docked
-tm_shape(census_matched_neighbors) +
-  tm_polygons(#col = 'docked_Bay Wheels',  # San francisco
-              col ='docked_Nice Ride Minnesota', # Mineapolis
-              #col ='docked_ECOBICI', # Mexico City
-              style = "cat",
-              palette = "-Pastel2",
-              title = "Availability of \nDocked Services",
-              border.alpha = 0.3, 
-              legend.is.portrait = FALSE) +
-  tm_layout(main.title = "Docking Stations",
-            main.title.size = 1.2,
-            main.title.color = "azure4",
-            main.title.position = c("left", "top"),
-            fontfamily = 'Georgia',
-            frame = FALSE,
-            legend.position = c("left","bottom")) -> p1
-p1
-
-tmap_save(tm = p1, filename = paste0("../data/", city,"/Plots/docked_availability.png"))
-
-
-# Dockless
-tm_shape(census_matched_neighbors) +
-  tm_polygons(#col = 'dockless_Spin San Francisco',
-              col = 'dockless_Spin Minneapolis',
-              style = "cat",
-              palette = "-Pastel2",
-              title = "Availability of \nDockless Service",
-              border.alpha = 0.3, 
-              legend.is.portrait = FALSE) +
-  tm_layout(main.title = "Dockless Zones",
-            main.title.size = 1.2,
-            main.title.color = "azure4",
-            main.title.position = c("left", "top"),
-            fontfamily = 'Georgia',
-            frame = FALSE,
-            legend.position = c("left","bottom")) -> p2
-p2
-
-tmap_save(tm = p2, filename = paste0("../data/", city,"/Plots/dockless_availability.png"))
-
-# join plots together
-p3 <- tmap_arrange(p1, p2, nrow = 1)
-p3
-
-tmap_save(tm = p3, filename = paste0("../data/", city,"/Plots/docked_dockless_availability.png"))
-
-
-# census job distribution
-
-# layer with census data mapped onto one resultion hexagon (useful for density)
-fixed_res_census <- st_read(paste0("../data_raw/", city, "/level_i/census_hex_fixed.geojson"))
-
-# columns we need for plotting
-# USA
-old_names <- c("pop_totalE", "C000")  # USA
-old_names <- c("pobtot", "jobs")  # Mexico City
-new_names <- c("population", "jobs")
-
-
-census_long <- fixed_res_census %>% 
-  select(cell_id, all_of(old_names)) %>%
-  rename_with(~ new_names, all_of(old_names)) %>% # rename the columns using the new_names list
-  pivot_longer(cols = new_names)
-
-
-tm_shape(census_long) +
-  tm_fill(col = 'value',
-              style = "fisher",
-              palette = "BuPu",
-              title = "",
-              #border.alpha = 0.05, 
-              #legend.is.portrait = FALSE
-          ) +
-  tm_facets(by="name",
-            nrow = 1,
-            free.coords=FALSE)  +
-  tm_layout(main.title = "Spatial Distribution of Empolyment and Population",
-            main.title.size = 1.2,
-            main.title.color = "azure4",
-            main.title.position = c("left", "top"),
-            fontfamily = 'Georgia',
-            frame = FALSE,
-            legend.position = c("left","bottom")) -> p
-
-p
-
-tmap_save(tm = p, filename = paste0("../data/", city,"/Plots/pop_emp_facet.png"))
-
-
 
