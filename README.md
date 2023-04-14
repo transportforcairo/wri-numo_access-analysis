@@ -5,7 +5,7 @@ This repository contains scripts and datasets from the study "*All Possible Comm
  
  The repository is organised into the following folders: 
  ### code
-Scripts and edited software tools that comprises the data pipeline enabling accessibility modeling as per our methodology. You will find instructions on how to apply the analysis to the city of your choosing in the README within. Pipeline sequence is as follows:
+Scripts and edited software tools that comprises the data pipeline enabling accessibility modeling as per our methodology. You will find instructions on how to apply the analysis to the city of your choosing in the [README of the code folder](https://github.com/transportforcairo/wri-numo_access-analysis/tree/main/code). Pipeline sequence is as follows:
 1. **Pre-processing**: Set of scripts to download and process data from online sources and prepare datasets for analysis.
 2. **pbf_augmenter**: Python script that embeds road segment speed data into an OSM PBF road network. More details on this process can be found in the section on [editing osm pbf files](#editing-osm-pbf-files).
 3. **Analysis**: Scripts used for calculating travel time matrices and accessibility measures. More details on this process can be found in the section on [micromobility and accessibility](#micromobility-and-accessibility).
@@ -37,21 +37,9 @@ Each segment in the speed dataset is labelled with an OSM way ID, a start node, 
 
 The logic of the maxspeed_setter script is as follows. We iterate over each way in the OSM network to check if there is a real speed reported from Uber/Mapbox for any of the way's child nodes. For each way, we take the list of nodes and query the speeds dataset for segments with matching start and end nodes. Then we iterate over each reported speed and if its in the same direction of travel as the way, we copy the nodes and all their tags to a new synthetic way with a new way ID, counting sequentuially up from the newwayID_seed provided in the inputs. The new way gets an extra tag “synthetic = yes” as well as a maxspeed tag with its value as the real speed from the speeds dataframe. If there was an existing maxspeed, it is overwritten, otherwise a new maxspeed tag is created. Once all new ways are created, the nodes on the original ways that have been copied to synthetic ways are deleted from the road network. This is done first by removing the copied nodes from the start of the original way, then removing nodes from the end of the copied way, and finally, middle segments of the original way are removed. If the original way is left with gaps in its node sequence, it is replaced with new ways that have continuous node sequences and no real speed tag. Ways left with only one node are deleted.
 
-
-
 1. Convert pbf file to xml
     - We used Osmium, a command line tool that works with OSM, to convert the pbf to xml (and back again after the mxspeed_setter function)
-
-2. Run the Python script ["Maxspeed_setter_wfunctions.py"](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/2_pbf_augmenter/Maxspeed_setter_wfunctions.py) from the command line after the following:
-
-    * Change the following input variables in the script: 
-       - road_path: the path ro the .xml OSM road network 
-       - newwayID_seed: for naming, can be left at 1000
-       - output_file_name: a string to name the output .xml file
-       - avgspeed: this is the real speed from Uber/Mapbox as csv
-       - cityunits: string 'mph' or 'kph'
-    - uncomment the colnames and speedsDFpeak variables for the appropriaate data source (Uber or Mapbox) on lines 40,41, and 44
-  
+2. Run the Python script ["Maxspeed_setter_wfunctions.py"](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/2_pbf_augmenter/Maxspeed_setter_wfunctions.py) from the command line after changing some parameters (see the [code Readme](https://github.com/transportforcairo/wri-numo_access-analysis/edit/main/code/Readme.md) for a documentation of the parameters to change)
 3. Convert xml to pbf
     - use Osmium in the command line once again to convert the xml output to pbf
 
