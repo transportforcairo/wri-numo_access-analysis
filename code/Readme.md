@@ -79,7 +79,13 @@ We have two options:
     - *census_matched_neighbors* function: docked_col / dockless_col arguments should be the name of the provider you want to use for the anlysis. If there are more than one docked services provider in a city, choose one (same appllies for dockless). The name should match exactly with the name of the provider in the "provider" column of the docks/dockless layer
 - [2.4b_transform-validate_gtfs_feeds.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/1_Preprocessing/2.4b_transform-validate_gtfs_feeds.R)
     - city: chosen city
-- [Maxspeed_Setter_wfunctions](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/2_pbf_augmenter/Maxspeed_setter_wfunctions.py) 
+- [Maxspeed_Setter_wfunctions](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/2_pbf_augmenter/Maxspeed_setter_wfunctions.py). Change the following input variables in the script: 
+     - road_path: the path to the .xml OSM road network 
+     - newwayID_seed: for naming, can be left at 1000
+     - output_file_name: a string to name the output .xml file
+     - avgspeed: this is the real speed from Uber/Mapbox as csv
+     - cityunits: string 'mph' or 'kph'
+     - uncomment the colnames and speedsDFpeak variables for the appropriaate data source (Uber or Mapbox) on lines 40,41, and 44
 - [3.1_analysis-travel_time_r5.R](https://github.com/transportforcairo/wri-numo_access-analysis/blob/main/code/3_Analysis/3.1_analysis-travel_time_r5.R): This script could be run twice, once with an unedited pbf file, and once with a pbf file produced by *Maxspeed_setter_wfunctions* (if you have road segment speed data)
     - city: chosen city
     - congested: "yes" if running analysis using an osm.pbf with congested speeds, "no" if using an unedited .pbf file
