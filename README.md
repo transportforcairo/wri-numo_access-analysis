@@ -25,11 +25,9 @@ Figures and visualizations generated for the report in original quality
 
 ### Editing OSM pbf files
 
-#### Sourcing the data 
-
 Freely available, updated data on road-segment level speeds is hard to come by. We used the Uber movement speed dataset [(link)](https://movement.uber.com/explore/london/speeds/query?lang=en-GB&dt[tpb]=ALL_DAY&dt[wd;]=1,2,3,4,5,6,7&dt[dr][sd]=2020-03-01&dt[dr][ed]=2020-03-31&ff=) as well as proprietary Mapbox data. Both give speed data at a high resolution, an OSM road segment (node to node), which rolls up to an OSM Way (collection of nodes).
 
-#### Using the data for routing 
+#### Approach 
 
 To add traffic data onto road network segments, we need to edit the OSM pbf file that r5 uses to build the routable graph. There is a discussion in r5r about enabling this functionality, but it is still a work in progress [(link)](https://github.com/ipeaGIT/r5r/issues/289). 
 
@@ -67,12 +65,16 @@ The flowchart below shows the heuristic used to determine which mode combination
  ![Which mode combinations to use when calculating travel times by micromobility](./visuals/readme/mode_combinations_flowchart.png)
  
 
-#### Examples of Results
+### Examples of Results
 
-##### Spatial Distribution of Docked Micromobility (Cairo, Egypt)
+#### Accessibility by car (Freeflow vs congested road speeds)
+
+![Effect of Congestion on Accessibility Results (Car)](./visuals/svg_formats/Cairo/Effect_Congestion_on_Car_Accessibility.svg)
+
+#### Spatial Distribution of Docked Micromobility (Cairo, Egypt)
 
 ![Spatial Distribution of Docked Micromobility](./visuals/svg_formats/Cairo/Spatial_Distribution_of_Docked_Micromobility.svg)
 
-##### Accessibility to Jobs - Improvement due to Docked Micromobility (Cairo, Egypt)
+#### Accessibility to Jobs - Improvement due to Docked Micromobility (Cairo, Egypt)
 
 ![Accessibility to Jobs - Improvement due to Docked Micromobility](https://raw.githubusercontent.com/transportforcairo/wri-numo_access-analysis/main/visuals/svg_formats/Cairo/Accessibility_to_Jobs-Improvement_due_to_Docked_Micromobility.svg)
